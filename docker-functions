@@ -1,0 +1,33 @@
+#!/bin/sh
+
+function docker-base {
+  echo "$1"
+  command_pull="docker pull $2";
+  echo "[$command_pull]"
+  eval ${command_pull}
+
+  command_run="docker run --rm -it -v ${PWD}:/app --workdir /app $2";
+  if [ "$#" -eq 2 ]; then
+    command_run="$command_run bash";
+  fi
+  command_run="$command_run ${@:3}";
+  
+  echo "[$command_run]"
+  eval ${command_run}
+}
+
+function docker-go {
+  docker-base "Docker Go" "golang" $@
+}
+
+function docker-nodelts {
+  docker-base "Docker Node js LTS" "node:lts" $@
+}
+
+function docker-dotnet6 {
+  docker-base "Docker dotNET 6" "mcr.microsoft.com/dotnet/sdk:6.0" $@
+}
+
+function docker-python3 {
+  docker-base "Python 3" "python:3" $@
+}
